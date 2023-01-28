@@ -6,6 +6,15 @@ import styles from '@/styles/Home.module.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const axios = require('axios');
+
+  axios.get('https://portail.etsmtl.ca/ICal/SeancesCours?typeact=C&Sigle=LOG121&Groupe=01&Session=20221')
+  .then(response => {
+    console.log(response.data);
+  })
+  .catch(error => {
+    console.log(error);
+  });
   return (
     <>
       <Head>
