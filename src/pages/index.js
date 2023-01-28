@@ -2,19 +2,21 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import useSWR from 'swr'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const axios = require('axios');
-
-  axios.get('https://portail.etsmtl.ca/ICal/SeancesCours?typeact=C&Sigle=LOG121&Groupe=01&Session=20221')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.log(error);
-  });
+  const url = new URL('https://portail.etsmtl.ca/ICal/SeancesCours')
+  url.searchParams.set('typeact', 'C');
+  url.searchParams.set('Sigle', 'LOG121');
+  url.searchParams.set('Groupe', '01');
+  url.searchParams.set('Session', '20221');
+  const finalUrl = `/api/proxy?url=${encodeURIComponent(url.href)}`;
+  const fetcher = (finalUrl) => fetch(finalUrl).then(r => r.text());
+  const { data, error } = useSWR(finalUrl, fetcher)
+  console.log(data);
+  console.log(error)
   return (
     <>
       <Head>
